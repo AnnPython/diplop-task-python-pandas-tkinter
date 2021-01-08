@@ -45,6 +45,11 @@ def read_riven():
              startcol=0,startrow=13)
         
         writer.save()
+
+        workbook = load_workbook(file_name )
+        sheet = workbook.active
+        sheet["D19"] = "=SUM(D15:D18)"
+        workbook.save(file_name)
 read_riven()
 
 
@@ -69,7 +74,12 @@ def koef_rentab():
              startcol=0,startrow=21)
       
     writer.save()
-        
+''' 
+    workbook = load_workbook(file_name )
+    sheet = workbook.active
+    sheet["P2"] = "hhhhhhh"
+    workbook.save(file_name)
+'''        
 koef_rentab()    
 
 def vpluv():  
@@ -114,8 +124,14 @@ def vpluv():
         
         df3.to_excel(writer, sheet_name='Ан', header=True, index=False,
              startcol=0,startrow=25)
-      
+        
         writer.save()
+        workbook = load_workbook(file_name )
+        sheet = workbook.active
+        sheet["A34"] = "Разом"
+        sheet["B34"] = "=SUM(B27:B33)"
+        workbook.save(file_name)
+        
 vpluv()    
 
 
