@@ -25,8 +25,10 @@ def export():
 def read_add_upload():
     file_name = str(period.get()) + '.xlsx'
     if file_name in os.listdir():
-        excel_data_df = pd.read_excel(file_name)            
+        excel_data_df = pd.read_excel(file_name)
+        
         excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']
+        excel_data_df=np.round(excel_data_df, 1)
         excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100         
         excel_data_df.to_excel(file_name,sheet_name='Ан', index=False)       
         
@@ -35,10 +37,11 @@ def read_add_upload():
 def read_add_read():
     file_name = str(period.get()) + '.xlsx'
     if file_name in os.listdir():                
-        excel_data_df = pd.read_excel(file_name)         
+        excel_data_df = pd.read_excel(file_name)  
         excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']
-        excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100
-        excel_data_df.to_excel(file_name,sheet_name='Ан', index=False)        
+        excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100    
+        excel_data_df.to_excel(file_name,sheet_name='Ан', index=False)
+    
         messagebox.showinfo(title=None,message='Дані завантажено')
             
     

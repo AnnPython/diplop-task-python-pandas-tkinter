@@ -5,7 +5,7 @@ import pandas as pd
 import xlsxwriter
 from pandas import ExcelWriter
 import numpy as np
-
+from openpyxl import formatting, styles
 
 
 file_name = str(period.get()) + '.xlsx'
@@ -34,14 +34,14 @@ def read_riven():
                        (float(riven_others_expenses_now)-float(riven_others_expenses_priv))]}
         global df1
         df1=pd.DataFrame(dann, columns=['Рівень', 'Попередній','Поточний', 'Відхилення рівня'])
-        df1=np.round(df1, 2)
+        #df1=np.round(df1, 2)
         file_name = str(period.get()) + '.xlsx'
         writer = pd.ExcelWriter(file_name, engine='openpyxl')
         book = load_workbook(file_name)
         writer.book = book
         writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
         
-        df1.to_excel(writer, sheet_name='Ан', header=True, index=False,
+        df1.to_excel(writer, sheet_name='Ан',float_format="%.1f", header=True, index=False,
              startcol=0,startrow=13)
         
         writer.save()
@@ -49,6 +49,9 @@ def read_riven():
         workbook = load_workbook(file_name )
         sheet = workbook.active
         sheet["D19"] = "=SUM(D15:D18)"
+        
+        #sheet["D19"].alignment = center_aligned_text
+        #sheet["D19"].border = square_border
         workbook.save(file_name)
 read_riven()
 
@@ -63,16 +66,16 @@ def koef_rentab():
    
    
     df2=pd.DataFrame([['Коефіцієнт рентабельності'],['Попередне значення', 'Поточне значення', 'Різниця'],[float(koef_rent_priv), float(koef_rent_now), rizn]])
-    df2=np.round(df2, 2)
+    df2=np.round(df2, 1)
     file_name = str(period.get()) + '.xlsx'
     writer = pd.ExcelWriter(file_name, engine='openpyxl')
     book = load_workbook(file_name)
     writer.book = book
     writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
         
-    df2.to_excel(writer, sheet_name='Ан', header=False, index=False,
+    df2.to_excel(writer, sheet_name='Ан', float_format="%.1f", header=False, index=False,
              startcol=0,startrow=21)
-      
+
     writer.save()
 ''' 
     workbook = load_workbook(file_name )
@@ -115,7 +118,7 @@ def vpluv():
 
         df3=pd.DataFrame(dani_vpluv, columns=['Фактор', 'Вплив'])                                    
     
-        df3=np.round(df3, 2)
+        df3=np.round(df3, 1)
         file_name = str(period.get()) + '.xlsx'
         writer = pd.ExcelWriter(file_name, engine='openpyxl')
         book = load_workbook(file_name)
