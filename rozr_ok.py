@@ -2,7 +2,6 @@ import vidget_norm
 from vidget_norm import *
 from openpyxl import load_workbook
 import pandas as pd
-import xlsxwriter
 from pandas import ExcelWriter
 import numpy as np
 from openpyxl import formatting, styles
@@ -13,6 +12,8 @@ if file_name in os.listdir():
     list_dani = pd.read_excel(file_name)
     dani_priv_period = list(list_dani['Попередній період'])
     dani_now_period = list(list_dani['Поточний період'])
+    
+    logging.info(f'Файл {file_name} зчитано та зібрано вхідні дані в списки')
 
 def read_riven():  
         
@@ -27,6 +28,9 @@ def read_riven():
         riven_others_profit_priv=dani_priv_period[6]/(dani_priv_period[0]+dani_priv_period[6]+dani_priv_period[7])*100
         riven_others_profit_now=dani_priv_period[6]/(dani_now_period[0]+dani_now_period[6]+dani_now_period[7])*100
 
+
+        logging.info('Розрахунок рівнів впливу проведено')
+         
         dann={'Рівень': ['Рівень собівартості','Рівень адміністративних витрат','Рівень витрат на збут','Рівень інших операційних витрат'],
         'Попередній': [float(riven_cost_price_priv),float(riven_admin_expenses_priv), float(riven_trade_expenses_priv),float(riven_others_expenses_priv)],
         'Поточний': [float(riven_cost_price_now),float(riven_admin_expenses_now), float(riven_trade_expenses_now), float(riven_others_expenses_now)],
@@ -34,25 +38,24 @@ def read_riven():
                        (float(riven_others_expenses_now)-float(riven_others_expenses_priv))]}
         global df1
         df1=pd.DataFrame(dann, columns=['Рівень', 'Попередній','Поточний', 'Відхилення рівня'])
-        #df1=np.round(df1, 2)
+        
         file_name = str(period.get()) + '.xlsx'
         writer = pd.ExcelWriter(file_name, engine='openpyxl')
         book = load_workbook(file_name)
         writer.book = book
         writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
         
-        df1.to_excel(writer, sheet_name='Ан',float_format="%.1f", header=True, index=False,
+        df1.to_excel(writer, sheet_name='Аналіз',float_format="%.1f", header=True, index=False,
              startcol=0,startrow=13)
         
         writer.save()
 
         workbook = load_workbook(file_name )
         sheet = workbook.active
-        sheet["D19"] = "=SUM(D15:D18)"
-        
-        #sheet["D19"].alignment = center_aligned_text
-        #sheet["D19"].border = square_border
+        sheet['D19'] = '=SUM(D15:D18)'        
         workbook.save(file_name)
+        
+        logging.debug(f'Розрахунок рівнів впливу записано до файлу {file_name}')
 read_riven()
 
 
@@ -64,7 +67,7 @@ def koef_rentab():
     koef_rent_now=float(dani_now_period[8])/(float(dani_now_period[0])+float(dani_now_period[6])+float(dani_now_period[7]))*100
     rizn=koef_rent_now-koef_rent_priv
    
-   
+    logging.info('Розрахунок коефіцієнту рентабельності проведено')
     df2=pd.DataFrame([['Коефіцієнт рентабельності'],['Попередне значення', 'Поточне значення', 'Різниця'],[float(koef_rent_priv), float(koef_rent_now), rizn]])
     df2=np.round(df2, 1)
     file_name = str(period.get()) + '.xlsx'
@@ -73,16 +76,11 @@ def koef_rentab():
     writer.book = book
     writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
         
-    df2.to_excel(writer, sheet_name='Ан', float_format="%.1f", header=False, index=False,
+    df2.to_excel(writer, sheet_name='Аналіз', float_format="%.1f", header=False, index=False,
              startcol=0,startrow=21)
 
     writer.save()
-''' 
-    workbook = load_workbook(file_name )
-    sheet = workbook.active
-    sheet["P2"] = "hhhhhhh"
-    workbook.save(file_name)
-'''        
+    logging.debug(f'Коефіцієнт рентабельності записано до файлу {file_name} ')  
 koef_rentab()    
 
 def vpluv():  
@@ -92,6 +90,7 @@ def vpluv():
         dani_priv_period = list(list_dani['Попередній період'])
         dani_now_period = list(list_dani['Поточний період'])     
 
+        logging.info(f'Файл {file_name} зчитано та зібрано оновлені дані в списки')
 
         global vpluv_cost
         global vpluv_admin
@@ -111,6 +110,9 @@ def vpluv():
         vpluv_others_finprofit= (dani_now_period[7]-dani_priv_period[7])*float(koef_rent_priv)/100
         vpluv_profit=(dani_now_period[0]- dani_priv_period[0])*float(koef_rent_priv)/100
         all_vpluv=vpluv_cost+vpluv_admin+vpluv_others_expenses+vpluv_others_profit+vpluv_others_finprofit+vpluv_profit
+
+        logging.info('Розрахунок впливу факторів проведено')
+
         
         dani_vpluv={'Фактор': ['Собівартість', 'Адміністративні витрати','Інші операційні витрати','Витрати на збут',
                                                                  'Інші операційні доходи', 'Інші фінансові доходи', 'Дохід від реалізації'],
@@ -125,7 +127,7 @@ def vpluv():
         writer.book = book
         writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
         
-        df3.to_excel(writer, sheet_name='Ан', header=True, index=False,
+        df3.to_excel(writer, sheet_name='Аналіз', header=True, index=False,
              startcol=0,startrow=25)
         
         writer.save()
@@ -134,6 +136,7 @@ def vpluv():
         sheet["A34"] = "Разом"
         sheet["B34"] = "=SUM(B27:B33)"
         workbook.save(file_name)
+        logging.debug(f'Розрахунок впливу факторів записано до файлу {file_name}')  
         
 vpluv()    
 

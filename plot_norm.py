@@ -16,22 +16,25 @@ wb = load_workbook(file_name )
 sheet = wb.active
 ws = wb.active
 
-sheet.column_dimensions["A"].width = 27
-sheet.column_dimensions["B"].width = 15
-sheet.column_dimensions["C"].width = 15
-sheet.column_dimensions["D"].width = 15
-sheet.column_dimensions["E"].width = 15
+sheet.column_dimensions['A'].width = 27
+sheet.column_dimensions['B'].width = 13
+sheet.column_dimensions['C'].width = 13
+sheet.column_dimensions['D'].width = 13
+sheet.column_dimensions['E'].width = 13
 
-thin = Side(border_style="thin", color="303030") 
+
+
+thin = Side(border_style='thin', color='000000') 
 black_border = Border(top=thin, left=thin, right=thin, bottom=thin)
-font = Font(name='Times New Roman', size=10, bold=False, color='07101c')
-align = Alignment(horizontal="center", wrap_text= True, vertical="center")
+font = Font(name='Times New Roman', size=10, bold=False, color='000000')
+align = Alignment(horizontal='center', wrap_text= True, vertical='center')
+font_bold = Font(name='Times New Roman', size=10, bold=True, color='000000')
 
-for label in ["A", "B", "C", "D", "E"]: 
-    for col_idx in range(34):
-        idx = label + str(col_idx + 1) 
-        sheet[idx].alignment = align 
-        sheet[idx].font = font 
+for area in ['A', 'B', 'C', 'D', 'E']: 
+    for col_ind in range(34):
+        ind = area + str(col_ind + 1) 
+        sheet[ind].alignment = align 
+        sheet[ind].font = font 
 
 for row in ws['A2:E10']:
     for cell in row:
@@ -49,16 +52,27 @@ for row in ws['A23:C24']:
 
 for row in ws['A27:B34']:
     for cell in row:
-        cell.border = black_border         
-'''
-df.to_excel(writer, sheet_name="Sheet 1"
-workbook = load_workbook(file_name )
-sheet = workbook.active
-format1 = workbook.add_format({'num_format': '0.00'})
-sheet.set_column('E:E', 20, format1)
-workbook.save(file_name)
+        cell.border = black_border
 
-'''        
+
+
+sheet['A1'].font = font_bold
+sheet['B1'].font = font_bold
+sheet['C1'].font = font_bold
+sheet['D1'].font = font_bold
+sheet['E1'].font = font_bold
+sheet['A14'].font = font_bold
+sheet['B14'].font = font_bold
+sheet['C14'].font = font_bold
+sheet['D14'].font = font_bold
+sheet['A26'].font = font_bold
+sheet['B26'].font = font_bold
+sheet['A34'].font = font_bold
+sheet['B34'].font = font_bold
+sheet['A22'].font = font_bold
+
+logging.debug(f'Форматування файлу {file_name} проведено')  
+   
 wb.save(file_name)      
 
 
@@ -78,11 +92,12 @@ rows = [
 data = Reference(ws, min_col=2, min_row=26, max_col=2, max_row=33)
 titles = Reference(ws, min_col=1, min_row=27, max_row=33)
 chart = BarChart3D()
-chart.title = "Вплив факторів"
+chart.title = 'Вплив факторів'
 
 chart.add_data( data,titles_from_data=True)
 chart.set_categories(titles)
 
 ws.add_chart(chart, 'H4')
 wb1.save(file_name)
+logging.debug(f'Діаграма збережена до файлу {file_name}') 
 

@@ -1,12 +1,14 @@
 import tkinter as tk
-from tkinter import filedialog
 import tkinter.ttk as ttk
-from tkinter import IntVar
 import pandas as pd
 import sys
 import os
 from tkinter import messagebox
 import numpy as np
+from tkinter import font
+import logging
+
+logging.basicConfig(filename='factorn.log', format='%(asctime)s-%(levelname)s-%(message)s', datefmt='%Y:%m:%d:%H:%M:%S',level=logging.DEBUG)
 
 def export():
     
@@ -18,32 +20,34 @@ def export():
         
     df =pd.DataFrame(dd, columns=['Показники', 'Попередній період','Поточний період'])
     file_name = str(period.get()) + '.xlsx'
-    df.to_excel(file_name, sheet_name='Ан', index = False, header=True)
-    messagebox.showinfo(title=None,message='Дані завантажено')
-    
+       
+    df.to_excel(file_name, sheet_name='Аналіз', index = False, header=True)
 
+    messagebox.showinfo(title=None,message='Дані завантажено')
+    logging.debug(f'Вхідні дані записано до файлу {file_name} ')
+    
 def read_add_upload():
     file_name = str(period.get()) + '.xlsx'
     if file_name in os.listdir():
         excel_data_df = pd.read_excel(file_name)
-        
-        excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']
         excel_data_df=np.round(excel_data_df, 1)
-        excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100         
-        excel_data_df.to_excel(file_name,sheet_name='Ан', index=False)       
+        excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']
         
-        messagebox.showinfo(title=None,message='Дані завантажено')
-
+        excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100        
+        excel_data_df.to_excel(file_name,sheet_name='Аналіз',float_format="%.1f", index=False)       
+        
+        messagebox.showinfo(title=None,message='Розрахунок проведено')
+        logging.debug(f'Файл {file_name} з записаними вхідними даними зчитано та доданий розрахунок до таблиці з вхідними даними')
 def read_add_read():
     file_name = str(period.get()) + '.xlsx'
     if file_name in os.listdir():                
         excel_data_df = pd.read_excel(file_name)  
         excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']
         excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100    
-        excel_data_df.to_excel(file_name,sheet_name='Ан', index=False)
+        excel_data_df.to_excel(file_name,sheet_name='Аналіз',float_format="%.1f",  index=False)
     
         messagebox.showinfo(title=None,message='Дані завантажено')
-            
+        logging.debug(f'Файл {file_name}  з вхідними даними зчитано та доданий розрахунок до таблиці з вхідними даними')   
     
 def data():
     global period
@@ -72,9 +76,16 @@ def data():
           
     root1.destroy()
     root = tk.Tk()
-    root.title('факторний ')
-    root.geometry('650x500')
-
+    root.title('Факторний аналіз')
+    w = root.winfo_screenwidth()
+    h = root.winfo_screenheight()
+    w = w//2
+    h = h//2
+    w = w - 300
+    h = h - 300
+    root.geometry('600x500+{}+{}'.format(w,h))
+    root["bg"] = "#85B59E"
+   
     
     profit= tk.StringVar()  
     cost_price = tk.StringVar()  
@@ -100,21 +111,21 @@ def data():
 
     
    
-    lab1=ttk.Label(root, text='Дохід від реалізації')
-    lab2=ttk.Label(root, text='Собівартість')
-    lab3=ttk.Label(root, text='Валовий')
-    lab4=ttk.Label(root, text='Адміністративні витрати')
-    lab5=ttk.Label(root, text='Витрати на збут')
-    lab6=ttk.Label(root, text='Інші витрати')
-    lab7=ttk.Label(root, text='Інші доходи')
-    lab8=ttk.Label(root, text='Інші фінансові доходи')
-    lab9=ttk.Label(root, text='Фінансовий результат') 
+    lab1=tk.Label(root, text='Дохід від реалізації, тис. грн',bg='#85B59E',font=('Calibri',10, 'bold') )
+    lab2=tk.Label(root, text='Собівартість тис. грн',bg='#85B59E',font=('Calibri',10, 'bold')  )
+    lab3=tk.Label(root, text='Валовий тис. грн ',bg='#85B59E' ,font=('Calibri',10, 'bold') )
+    lab4=tk.Label(root, text='Адміністративні витрати тис. грн ',bg='#85B59E',font=('Calibri',10, 'bold')  )
+    lab5=tk.Label(root, text='Витрати на збут тис. грн',bg='#85B59E', font=('Calibri',10, 'bold') )
+    lab6=tk.Label(root, text='Інші витрати тис. грн ',bg='#85B59E' ,font=('Calibri',10, 'bold') )
+    lab7=tk.Label(root, text='Інші доходи тис. грн ',bg='#85B59E', font=('Calibri',10, 'bold') )
+    lab8=tk.Label(root, text='Інші фінансові доходи тис. грн',bg='#85B59E',font=('Calibri',10, 'bold')  )
+    lab9=tk.Label(root, text='Фінансовий результат тис. грн',bg='#85B59E' ,font=('Calibri',10, 'bold') ) 
     
 
 
-    lab10=ttk.Label(root, text='Попередній період')
+    lab10=tk.Label(root, text='Попередній період', bg='#99cfb5', font=('Calibri',10, 'bold'))
     lab10.grid(row=0,column=5)
-    lab11=ttk.Label(root, text='Поточний період')
+    lab11=tk.Label(root, text='Поточний період', bg='#99cfb5', font=('Calibri',10, 'bold'))
     lab11.grid(row=0,column=9)
     
     
@@ -153,51 +164,64 @@ def data():
 
 
    
-    ent1.grid(row = 1, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent2.grid(row = 2, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent3.grid(row = 3, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent4.grid(row = 4, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent5.grid(row = 5, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent6.grid(row = 6, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent7.grid(row = 7, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent8.grid(row = 8, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent9.grid(row = 9, column = 5, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent1.grid(row = 1, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent2.grid(row = 2, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent3.grid(row = 3, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent4.grid(row = 4, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent5.grid(row = 5, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent6.grid(row = 6, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent7.grid(row = 7, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent8.grid(row = 8, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
+    ent9.grid(row = 9, column = 5, columnspan = 2, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
  
     
-    ent11.grid(row = 1, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent22.grid(row = 2, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent33.grid(row = 3, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent44.grid(row = 4, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent55.grid(row = 5, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent66.grid(row = 6, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent77.grid(row = 7, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent88.grid(row = 8, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-    ent99.grid(row = 9, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'we') 
+    ent11.grid(row = 1, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent22.grid(row = 2, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent33.grid(row = 3, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent44.grid(row = 4, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent55.grid(row = 5, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent66.grid(row = 6, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent77.grid(row = 7, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent88.grid(row = 8, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e')
+    ent99.grid(row = 9, column = 8, columnspan = 3, padx = 5, pady = 5, ipady = 5,  sticky = 'e') 
 
 
     
-    btn1 = ttk.Button(root, text = 'Завантажити', command=export)
-    btn1.grid(row = 10, column = 7)
-
-    btn3 = ttk.Button(root, text = 'розрахувати', command=read_add_upload)
-    btn3.grid(row = 14, column =7)
-
+    btn1 = tk.Button(root, text = 'Завантажити',relief = 'groove', border = 6, font=('Calibri',12, 'bold'), bg='#99cfb5',fg='black',command=export)
+    btn1.grid(row = 16, column = 12, ipadx = 5, ipady = 5)
+    logging.debug('Вхідні дані завантажено')
+    btn3 = tk.Button(root, text = 'Розрахувати',relief = 'groove', border = 6,font=('Calibri',12, 'bold'), bg='#99cfb5',fg='black',command=read_add_upload)
+    btn3.grid(row = 17, column =12, ipadx = 5, ipady = 5)
+    btn3.config(command=read_add_upload )
+    
     root.mainloop()
        
+
+
     
 root1 = tk.Tk()
-root1.title('Вибір')
-root1.geometry('300x150')
+root1.title('Вибір шляху введення даних')
+
+w = root1.winfo_screenwidth()
+h = root1.winfo_screenheight()
+w = w//2
+h = h//2
+w = w - 200
+h = h - 200
+root1.geometry('300x200+{}+{}'.format(w,h))
+root1["bg"] = "#85B59E"
+
 period=tk.StringVar() 
-ent0=ttk.Entry(root1,textvariable = period )
+ent0=tk.Entry(root1,textvariable = period )
 ent0.grid(row = 0, column = 2, columnspan = 50, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-lab0=ttk.Label(root1, text='Назва файла')
-lab0.grid(row=0,column=0)
+lab0=t=tk.Label(root1, text='Назва файла', bg='#85B59E' ,font=('Calibri',12, 'bold') )
+lab0.grid(row=0,column=0, )
 
 write = ttk.Radiobutton(root1, text='Занести дані',  command=data)
-upload = ttk.Radiobutton(root1, text='завантажити з файлу',  command=read_add_read)
+upload = ttk.Radiobutton(root1, text='Завантажити з файлу',   command=read_add_read)
 write.grid(row = 1, column = 12, sticky = 'w', pady = 10)
 upload.grid(row = 2, column = 12,sticky = 'w', pady = 10)
+logging.info('Вибір способу внесення даних зроблено')
 
 root1.mainloop()
 
