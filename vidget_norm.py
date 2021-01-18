@@ -10,6 +10,8 @@ import logging
 
 logging.basicConfig(filename='factorn.log', format='%(asctime)s-%(levelname)s-%(message)s', datefmt='%Y:%m:%d:%H:%M:%S',level=logging.DEBUG)
 
+
+
 def export():
     
     dd={'Показники': ['Дохід від реалізації','Собівартість','Валовий','Адміністративні витрати','Витрати на збут','Інші витрати','Інші доходи',
@@ -75,6 +77,9 @@ def data():
     global ent99
           
     root1.destroy()
+    def close():
+        root.destroy()
+
     root = tk.Tk()
     root.title('Факторний аналіз')
     w = root.winfo_screenwidth()
@@ -84,9 +89,21 @@ def data():
     w = w - 300
     h = h - 300
     root.geometry('600x500+{}+{}'.format(w,h))
-    root["bg"] = "#85B59E"
-   
-    
+    root["bg"] = "#51856c"
+
+    frame = tk.Frame(root, bg='#7AA899')
+    frame['borderwidth'] = 3   
+    frame['relief'] = 'ridge'
+    frame['border']=5   
+    frame.pack(padx=1,pady=1)
+
+    frame1 = tk.Frame(root, bg='#51856c')    
+    frame1['borderwidth'] = 20    
+    frame1['relief'] = 'flat'
+    frame1['border']=10   
+    frame1.pack(padx=1,pady=1)
+
+
     profit= tk.StringVar()  
     cost_price = tk.StringVar()  
     val_profit= tk.StringVar()  
@@ -111,21 +128,21 @@ def data():
 
     
    
-    lab1=tk.Label(root, text='Дохід від реалізації, тис. грн',bg='#85B59E',font=('Calibri',10, 'bold') )
-    lab2=tk.Label(root, text='Собівартість тис. грн',bg='#85B59E',font=('Calibri',10, 'bold')  )
-    lab3=tk.Label(root, text='Валовий тис. грн ',bg='#85B59E' ,font=('Calibri',10, 'bold') )
-    lab4=tk.Label(root, text='Адміністративні витрати тис. грн ',bg='#85B59E',font=('Calibri',10, 'bold')  )
-    lab5=tk.Label(root, text='Витрати на збут тис. грн',bg='#85B59E', font=('Calibri',10, 'bold') )
-    lab6=tk.Label(root, text='Інші витрати тис. грн ',bg='#85B59E' ,font=('Calibri',10, 'bold') )
-    lab7=tk.Label(root, text='Інші доходи тис. грн ',bg='#85B59E', font=('Calibri',10, 'bold') )
-    lab8=tk.Label(root, text='Інші фінансові доходи тис. грн',bg='#85B59E',font=('Calibri',10, 'bold')  )
-    lab9=tk.Label(root, text='Фінансовий результат тис. грн',bg='#85B59E' ,font=('Calibri',10, 'bold') ) 
+    lab1=tk.Label(frame, text='Дохід від реалізації, тис. грн',bg='#7AA899', font=('Calibri',10, 'bold') )
+    lab2=tk.Label(frame, text='Собівартість тис. грн',bg='#7AA899', font=('Calibri',10, 'bold')  )
+    lab3=tk.Label(frame, text='Валовий тис. грн ', bg='#7AA899',font=('Calibri',10, 'bold') )
+    lab4=tk.Label(frame, text='Адміністративні витрати тис. грн ', bg='#7AA899',font=('Calibri',10, 'bold')  )
+    lab5=tk.Label(frame, text='Витрати на збут тис. грн',bg='#7AA899', font=('Calibri',10, 'bold') )
+    lab6=tk.Label(frame, text='Інші витрати тис. грн ',bg='#7AA899', font=('Calibri',10, 'bold') )
+    lab7=tk.Label(frame, text='Інші доходи тис. грн ',bg='#7AA899', font=('Calibri',10, 'bold') )
+    lab8=tk.Label(frame, text='Інші фінансові доходи тис. грн',bg='#7AA899', font=('Calibri',10, 'bold')  )
+    lab9=tk.Label(frame, text='Фінансовий результат тис. грн',bg='#7AA899', font=('Calibri',10, 'bold') ) 
     
 
 
-    lab10=tk.Label(root, text='Попередній період', bg='#99cfb5', font=('Calibri',10, 'bold'))
+    lab10=tk.Label(frame, text='Попередній період', bg='#7AA899', font=('Calibri',10, 'bold'))
     lab10.grid(row=0,column=5)
-    lab11=tk.Label(root, text='Поточний період', bg='#99cfb5', font=('Calibri',10, 'bold'))
+    lab11=tk.Label(frame, text='Поточний період', bg='#7AA899', font=('Calibri',10, 'bold'))
     lab11.grid(row=0,column=9)
     
     
@@ -141,26 +158,26 @@ def data():
 
 
     
-    ent1 = tk.Entry(root, textvariable = profit)
-    ent2 = tk.Entry(root, textvariable = cost_price)
-    ent3 = tk.Entry(root, textvariable = val_profit)
-    ent4 = tk.Entry(root, textvariable = admin_expenses)
-    ent5 = tk.Entry(root, textvariable = trade_expenses)
-    ent6 = tk.Entry(root, textvariable = others_expenses)
-    ent7 = tk.Entry(root, textvariable = others_profit)
-    ent8 = tk.Entry(root, textvariable = others_finprofit)
-    ent9 = tk.Entry(root, textvariable = fin_rez)
+    ent1 = tk.Entry(frame, textvariable = profit)
+    ent2 = tk.Entry(frame, textvariable = cost_price)
+    ent3 = tk.Entry(frame, textvariable = val_profit)
+    ent4 = tk.Entry(frame, textvariable = admin_expenses)
+    ent5 = tk.Entry(frame, textvariable = trade_expenses)
+    ent6 = tk.Entry(frame, textvariable = others_expenses)
+    ent7 = tk.Entry(frame, textvariable = others_profit)
+    ent8 = tk.Entry(frame, textvariable = others_finprofit)
+    ent9 = tk.Entry(frame, textvariable = fin_rez)
   
      
-    ent11 = ttk.Entry(root, textvariable = profit1)
-    ent22 = ttk.Entry(root, textvariable = cost_price1)
-    ent33 = ttk.Entry(root, textvariable = val_profit1)
-    ent44 = ttk.Entry(root, textvariable = admin_expenses1)
-    ent55 = ttk.Entry(root, textvariable = trade_expenses1)
-    ent66 = ttk.Entry(root, textvariable = others_expenses1)
-    ent77 = ttk.Entry(root, textvariable = others_profit1)
-    ent88 = ttk.Entry(root, textvariable = others_finprofit1)
-    ent99 = ttk.Entry(root, textvariable = fin_rez1) 
+    ent11 = ttk.Entry(frame, textvariable = profit1)
+    ent22 = ttk.Entry(frame, textvariable = cost_price1)
+    ent33 = ttk.Entry(frame, textvariable = val_profit1)
+    ent44 = ttk.Entry(frame, textvariable = admin_expenses1)
+    ent55 = ttk.Entry(frame, textvariable = trade_expenses1)
+    ent66 = ttk.Entry(frame, textvariable = others_expenses1)
+    ent77 = ttk.Entry(frame, textvariable = others_profit1)
+    ent88 = ttk.Entry(frame, textvariable = others_finprofit1)
+    ent99 = ttk.Entry(frame, textvariable = fin_rez1) 
 
 
    
@@ -187,17 +204,24 @@ def data():
 
 
     
-    btn1 = tk.Button(root, text = 'Завантажити',relief = 'groove', border = 6, font=('Calibri',12, 'bold'), bg='#99cfb5',fg='black',command=export)
-    btn1.grid(row = 16, column = 12, ipadx = 5, ipady = 5)
+    btn1 = tk.Button(frame1, text = 'Завантажити',relief = 'groove', border = 4, font=('Calibri',12, 'bold'), bg='#7AA899',fg='black',command=export)
+    btn1.grid(row = 16, column = 12, ipadx = 3, ipady = 3)
     logging.debug('Вхідні дані завантажено')
-    btn3 = tk.Button(root, text = 'Розрахувати',relief = 'groove', border = 6,font=('Calibri',12, 'bold'), bg='#99cfb5',fg='black',command=read_add_upload)
-    btn3.grid(row = 17, column =12, ipadx = 5, ipady = 5)
+    btn3 = tk.Button(frame1, text = 'Розрахувати',relief = 'groove', border = 4,font=('Calibri',12, 'bold'), bg='#7AA899',fg='black',command=read_add_upload)
+    btn3.grid(row = 16, column =14, ipadx = 3, ipady = 3)
     btn3.config(command=read_add_upload )
+
+    btn4 = tk.Button(frame1, text = 'Закрити',relief = 'groove', border = 4,font=('Calibri',10, 'bold'), bg='white', fg='red',command=close)
+    btn4.grid(row = 16, column =25, ipadx = 3, ipady = 3,sticky = 'se' )
+    btn4.config(command=close )
+
+
     
     root.mainloop()
        
 
-
+def close():
+        root1.destroy()
     
 root1 = tk.Tk()
 root1.title('Вибір шляху введення даних')
@@ -209,12 +233,12 @@ h = h//2
 w = w - 200
 h = h - 200
 root1.geometry('300x200+{}+{}'.format(w,h))
-root1["bg"] = "#85B59E"
+root1["bg"] = "#7AA899"
 
 period=tk.StringVar() 
 ent0=tk.Entry(root1,textvariable = period )
 ent0.grid(row = 0, column = 2, columnspan = 50, padx = 5, pady = 5, ipady = 5,  sticky = 'we')
-lab0=t=tk.Label(root1, text='Назва файла', bg='#85B59E' ,font=('Calibri',12, 'bold') )
+lab0=t=tk.Label(root1, text='Назва файла', bg='#7AA899' ,font=('Calibri',12, 'bold') )
 lab0.grid(row=0,column=0, )
 
 write = ttk.Radiobutton(root1, text='Занести дані',  command=data)
@@ -222,6 +246,12 @@ upload = ttk.Radiobutton(root1, text='Завантажити з файлу',   c
 write.grid(row = 1, column = 12, sticky = 'w', pady = 10)
 upload.grid(row = 2, column = 12,sticky = 'w', pady = 10)
 logging.info('Вибір способу внесення даних зроблено')
+
+
+btn5 = tk.Button(root1, text = 'Закрити',relief = 'groove', border = 4,font=('Calibri',10, 'bold'), bg='white', fg='red',command=close)
+btn5.grid(row = 18, column =20)
+btn5.config(command=close )
+
 
 root1.mainloop()
 
