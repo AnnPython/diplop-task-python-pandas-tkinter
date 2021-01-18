@@ -2,11 +2,9 @@ import vidget_norm
 import rozr_ok
 from rozr_ok import *
 import pandas as pd
-#import xlsxwriter
 from openpyxl import Workbook
 from openpyxl.chart import (Reference,Series,BarChart3D,)
 from openpyxl import load_workbook
-#from openpyxl.styles import NamedStyle
 from openpyxl.styles import Font, Color, Alignment, Border, Side, colors
 from openpyxl import cell
 
