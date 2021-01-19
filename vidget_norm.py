@@ -13,7 +13,6 @@ logging.basicConfig(filename='factorn.log', format='%(asctime)s-%(levelname)s-%(
 
 
 def export():
-    
     dd={'Показники': ['Дохід від реалізації','Собівартість','Валовий','Адміністративні витрати','Витрати на збут','Інші витрати','Інші доходи',
                       'Інші фінансові доходи','Фінансовий результат'],
         'Попередній період': [float(ent1.get()),float(ent2.get()),float(ent3.get()),float(ent4.get()),float(ent5.get()),float(ent6.get()),float(ent7.get()),float(ent8.get()),float(ent9.get())] ,
@@ -21,35 +20,45 @@ def export():
                             float(ent77.get()), float(ent88.get()), float(ent99.get())]}
         
     df =pd.DataFrame(dd, columns=['Показники', 'Попередній період','Поточний період'])
-    file_name = str(period.get()) + '.xlsx'
-       
+    
+    file_name = str(period.get()) + '.xlsx'    
     df.to_excel(file_name, sheet_name='Аналіз', index = False, header=True)
-
     messagebox.showinfo(title=None,message='Дані завантажено')
     logging.debug(f'Вхідні дані записано до файлу {file_name} ')
     
+        
 def read_add_upload():
+    
     file_name = str(period.get()) + '.xlsx'
     if file_name in os.listdir():
         excel_data_df = pd.read_excel(file_name)
         excel_data_df=np.round(excel_data_df, 1)
-        excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']
-        
+        excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']        
         excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100        
         excel_data_df.to_excel(file_name,sheet_name='Аналіз',float_format="%.1f", index=False)       
         
         messagebox.showinfo(title=None,message='Розрахунок проведено')
         logging.debug(f'Файл {file_name} з записаними вхідними даними зчитано та доданий розрахунок до таблиці з вхідними даними')
+    else:
+        messagebox.showinfo(title=None,message='Перевірте чи заповнені всі показники! \nПовторіть введення даних')
+        logging.debug(f'Файл {file_name} дані не записано, некоректні вхідні дані') 
+
+        
+            
 def read_add_read():
     file_name = str(period.get()) + '.xlsx'
     if file_name in os.listdir():                
-        excel_data_df = pd.read_excel(file_name)  
+        excel_data_df = pd.read_excel(file_name)
         excel_data_df['Відхилення']=excel_data_df['Поточний період']-excel_data_df['Попередній період']
         excel_data_df['Приріст']=excel_data_df['Поточний період']/excel_data_df['Попередній період']*100-100    
-        excel_data_df.to_excel(file_name,sheet_name='Аналіз',float_format="%.1f",  index=False)
-    
+        excel_data_df.to_excel(file_name,sheet_name='Аналіз',float_format="%.1f",  index=False)    
         messagebox.showinfo(title=None,message='Дані завантажено')
-        logging.debug(f'Файл {file_name}  з вхідними даними зчитано та доданий розрахунок до таблиці з вхідними даними')   
+        logging.debug(f'Файл {file_name}  з вхідними даними зчитано та доданий розрахунок до таблиці з вхідними даними')
+        
+    else:        
+        messagebox.showinfo(title=None,message='Файл не знайдено') 
+        logging.debug(f'Файл з вхідними даними не знайдено')
+     
     
 def data():
     global period
@@ -75,8 +84,12 @@ def data():
     global ent77
     global ent88 
     global ent99
-          
-    root1.destroy()
+
+    if period.get() != '':
+        root1.destroy()        
+    else:
+         messagebox.showinfo(title=None,message='Назва файла не внесено! \nВнесіть назву та продовжуйте')
+         logging.debug(f'Дані не записано, не вказано назву файла')         
     def close():
         root.destroy()
 
@@ -115,7 +128,6 @@ def data():
     fin_rez = tk.StringVar() 
 
  
-
     profit1= tk.StringVar()  
     cost_price1 = tk.StringVar()  
     val_profit1= tk.StringVar()  
@@ -125,7 +137,6 @@ def data():
     others_profit1 = tk.StringVar()
     others_finprofit1 = tk.StringVar()
     fin_rez1 = tk.StringVar() 
-
     
    
     lab1=tk.Label(frame, text='Дохід від реалізації, тис. грн',bg='#7AA899', font=('Calibri',10, 'bold') )
@@ -211,7 +222,7 @@ def data():
     btn3.grid(row = 16, column =14, ipadx = 3, ipady = 3)
     btn3.config(command=read_add_upload )
 
-    btn4 = tk.Button(frame1, text = 'Закрити',relief = 'groove', border = 4,font=('Calibri',10, 'bold'), bg='white', fg='red',command=close)
+    btn4 = tk.Button(frame1, text = 'Закрити',relief = 'groove', border = 4,font=('Calibri',10, 'bold'),bg='#7AA899', fg='red',command=close)
     btn4.grid(row = 16, column =25, ipadx = 3, ipady = 3,sticky = 'se' )
     btn4.config(command=close )
 
@@ -241,16 +252,19 @@ ent0.grid(row = 0, column = 2, columnspan = 50, padx = 5, pady = 5, ipady = 5,  
 lab0=t=tk.Label(root1, text='Назва файла', bg='#7AA899' ,font=('Calibri',12, 'bold') )
 lab0.grid(row=0,column=0, )
 
+
+
 write = ttk.Radiobutton(root1, text='Занести дані',  command=data)
 upload = ttk.Radiobutton(root1, text='Завантажити з файлу',   command=read_add_read)
 write.grid(row = 1, column = 12, sticky = 'w', pady = 10)
 upload.grid(row = 2, column = 12,sticky = 'w', pady = 10)
 logging.info('Вибір способу внесення даних зроблено')
-
-
-btn5 = tk.Button(root1, text = 'Закрити',relief = 'groove', border = 4,font=('Calibri',10, 'bold'), bg='white', fg='red',command=close)
+btn5 = tk.Button(root1, text = 'Закрити',relief = 'groove', border = 4,font=('Calibri',10, 'bold'), bg='#7AA899', fg='red',command=close)
 btn5.grid(row = 18, column =20)
 btn5.config(command=close )
+
+
+
 
 
 root1.mainloop()
